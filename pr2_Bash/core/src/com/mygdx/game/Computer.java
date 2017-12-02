@@ -2,31 +2,24 @@ package com.mygdx.game;
 
 import java.util.Random;
 
-/**
- * Created by elena on 05.11.2017.
- */
 public class Computer extends Gamer{
 
-    Random rand;
-
-    public Computer(Model model) {
+    public Computer(Model model, String name) {
        super(model);
-        rand = new Random();
+       this.name = name;
     }
 
+    @Override
     public int[] choiceStikcs(){
-        return model.getRandSticks(step(model.getN()));
-
-    }
-
-    public int[] choiceDel(){
-        return model.getRandSticks(step(model.getN()));
+        int []res =  model.getRandSticks(step(model.getN()));
+        return res;
     }
 
     private int step(int n){
+        Random rand = new Random();
         int s = n % (model.getM()+1);
         if (s != 0) return s;
         else
-            return rand.nextInt(model.getM());
+            return rand.nextInt(model.getM()-1)+1;
     }
 }

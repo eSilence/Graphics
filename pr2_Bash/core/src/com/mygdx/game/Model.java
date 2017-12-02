@@ -8,6 +8,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
@@ -19,6 +20,10 @@ public class Model {
     int m;
     Stick [] sticks;
     int space ;
+    Texture myFon;
+    Texture myOk;
+    Vector2 myOkPosition;
+
 
     public Model(int n, int m) {
         this.N = n;
@@ -30,10 +35,16 @@ public class Model {
             sticks[i] = new Stick(new Vector2(i * space +20,Gdx.graphics.getHeight()*1/4) );
             sticks[i].setTexture(new Texture("stick.jpg"));
         }
+        myFon = new Texture("fon.jpg");
+        myOk = new Texture("ok2.jpg");
+        myOkPosition = new Vector2( Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()*1/50);
     }
 
-    public Vector2 getSticks(int i) {
-        return sticks[i].getPosition();
+
+  //  public Vector2 getSticks(int i) { return sticks[i].getPosition(); }
+
+    public Stick getStick(int i) {
+        return sticks[i];
     }
 
     public int inSticks(Vector2 vect){
@@ -44,15 +55,28 @@ public class Model {
         }
         return -1;
     }
+    public boolean inOk(Vector2 vect){
+
+        Vector2 v = vect.cpy().sub(myOkPosition);
+      //  v.y = Gdx.graphics.getHeight() - v.y;
+        boolean b= v.x >= 0 && v.x <= myOk.getWidth() && v.y >= 0 && v.y <= myOk.getHeight() ;
+      //  if (b) System.out.println("OK");
+        return b;
+    }
 
     public int getN(){return n;}
 
     public int getM() {return m; }
 
-    public void delSticks(int[] delStiks){
-        for (int i = 0; i < delStiks.length ; i++) {
-            delStick(i);
+    public void delSticks(){ //int[] delStiks){
+     //   System.out.println("Model::delSticks()" );
+        for (int i = 0; i < N; i++) {
+            if (sticks[i].isStatusChoice()) {
+    //            System.out.print(i+ " ");
+                delStick(i);
+            }
         }
+   //     System.out.println("--");
     }
 
     public void delStick(int num){
@@ -62,7 +86,7 @@ public class Model {
 
     public void choiceSticks(int[] delStiks){
         for (int i = 0; i < delStiks.length ; i++) {
-            choiceStick(i);
+            choiceStick(delStiks[i]);
         }
     }
 
@@ -82,21 +106,23 @@ public class Model {
         }
 
         int k;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < count; i++) {
             do {
                 k = rand.nextInt(n);
             }
-            while (indx[k] != -1);
+            while (indx[k] == -1);
             result[i] = indx[k];
             indx[k] = -1;
         }
             return result;
     }
 
-    public void render(SpriteBatch batch){
+    public void render(SpriteBatch batch, BitmapFont bmf){
+        batch.draw(myFon, 0, 0);
+        batch.draw(myOk, myOkPosition.x, myOkPosition.y );
+        bmf.draw(batch,"Нажми меня", myOkPosition.x + myOk.getWidth()/3, myOkPosition.y + myOk.getHeight() );
         for (int i = 0; i < N; i++) {
             sticks[i].render(batch);
         }
-
     }
 }

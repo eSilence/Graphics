@@ -4,8 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-
-
 public class Stick {
     Vector2 position;
     private static Texture myTexture;
@@ -14,7 +12,7 @@ public class Stick {
 
     public Stick(Vector2 position) {
         this.position = position;
-        statusChoice = true;
+        statusChoice = false;
         statusDel = false;
     }
 
@@ -36,16 +34,17 @@ public class Stick {
 
     public void choiceStick(){
         statusChoice = !statusChoice;
-        if (!statusChoice)
+        if (statusChoice)
             position.y =  position.y - myTexture.getHeight()*1/5;
         else
             position.y =  position.y + myTexture.getHeight()*1/5;
     }
 
     public void delStick(){
-        if (!statusChoice) {
+        if (statusChoice) {
             statusDel = true;
-            setTexture(new Texture("fon.jpg"));
+            statusChoice = false;
+            position.sub(0, 800);
         }
     }
 
@@ -53,14 +52,9 @@ public class Stick {
         Stick.myTexture = texture;
     }
 
-//    public void update(){
-//        if (status == Status.Yes)
-//            setTexture(new Texture("stick.jpg"));
-//        else
-//            setTexture(new Texture("fon.jpg"));
-//    }
 
     public void render(SpriteBatch batch){
         batch.draw(myTexture, position.x, position.y);
+      //  System.out.println(" (" + position.x+ ", "+ position.y+")");
     }
 }
